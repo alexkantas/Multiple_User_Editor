@@ -39,51 +39,26 @@ import javax.swing.text.StyleContext;
  *
  * @author Alexandros Kantas
  */
-public class Viewer extends JFrame implements Observer, ActionListener, DocumentListener {
+public class Viewer extends JFrame implements Observer, ActionListener, DocumentListener,Runnable {
 
-//Interface Elements
-    JPanel panel1 = new JPanel();
-    JPanel panel2 = new JPanel();
-    BorderLayout borderlayout = new BorderLayout();
-    JTextPane txtarea = new JTextPane();
-    JScrollPane scrollPane = new JScrollPane(txtarea);
-    JButton logbtn = new JButton("Log out");
-    JList list = new JList();
-    JScrollPane scrollPane2 = new JScrollPane(list);
-    Model model;
-    StyleContext sc = StyleContext.getDefaultStyleContext();
-    AttributeSet aset ;
+    //Interface Elements
+    private JPanel panel1 = new JPanel();
+    private JPanel panel2 = new JPanel();
+    private BorderLayout borderlayout = new BorderLayout();
+    private JTextPane txtarea = new JTextPane();
+    private JScrollPane scrollPane = new JScrollPane(txtarea);
+    private JButton logbtn = new JButton("Log out");
+    private JList list = new JList();
+    private JScrollPane scrollPane2 = new JScrollPane(list);
+    private Model model;
+    private String title;
+    private StyleContext sc = StyleContext.getDefaultStyleContext();
+    private AttributeSet aset;
     //
 
     public Viewer(String title, Model model) {
-        //Add interface components
-        txtarea.getDocument().addDocumentListener(this);
-        panel1.add(txtarea);
-        panel2.setLayout(borderlayout);
-        logbtn.addActionListener(this);
-        list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-        list.setLayoutOrientation(JList.HORIZONTAL_WRAP);
-        list.setVisibleRowCount(-1);
-        panel2.add(logbtn, BorderLayout.PAGE_START);
-        panel2.add(list, BorderLayout.CENTER);
-        add(panel1, BorderLayout.CENTER);
-        add(panel2, BorderLayout.LINE_END);
-        //
-        
-        if (title.equals("Viewer #1"))
-        aset = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, Color.RED);
-        else
-            aset = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, Color.BLUE);
-
-        this.model = model;
-
-        //Set JFrame properties
-        setTitle(title);
-        setSize(300, 300);
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setVisible(true);
-        //
-
+        this.title=title;
+        this.model=model;
     }
 
     @Override
@@ -124,6 +99,36 @@ public class Viewer extends JFrame implements Observer, ActionListener, Document
     @Override
     public void changedUpdate(DocumentEvent de) {
 
+    }
+
+    @Override
+    public void run() {
+        //Add interface components
+        txtarea.getDocument().addDocumentListener(this);
+        panel1.add(txtarea);
+        panel2.setLayout(borderlayout);
+        logbtn.addActionListener(this);
+        list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        list.setLayoutOrientation(JList.HORIZONTAL_WRAP);
+        list.setVisibleRowCount(-1);
+        panel2.add(logbtn, BorderLayout.PAGE_START);
+        panel2.add(list, BorderLayout.CENTER);
+        add(panel1, BorderLayout.CENTER);
+        add(panel2, BorderLayout.LINE_END);
+        //
+
+        if (title.equals("Viewer #1")) {
+            aset = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, Color.RED);
+        } else {
+            aset = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, Color.BLUE);
+        }
+
+        //Set JFrame properties
+        setTitle(title);
+        setSize(300, 300);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setVisible(true);
+        //
     }
 
 }

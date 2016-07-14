@@ -16,8 +16,6 @@
 package gr.alexkantas.multipleusereditor;
 
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.JButton;
@@ -29,7 +27,7 @@ import javax.swing.JPanel;
  *
  * @author Alexandros Kantas
  */
-public class Main extends JFrame implements Observer {
+public class Main extends JFrame implements Observer, Runnable {
 
     //Interface Elements
     GridLayout grid = new GridLayout(2, 1);
@@ -39,11 +37,12 @@ public class Main extends JFrame implements Observer {
     Model model = new Model();
     //
 
-    public Main() {
+    @Override
+    public void run() {
         //Add interface components
         panel1.add(label);
         panel1.add(button);
-        button.addActionListener(e->model.addViewer());
+        button.addActionListener(e -> model.addViewer());
         add(panel1);
         model.addObserver(this);
         //
@@ -64,5 +63,8 @@ public class Main extends JFrame implements Observer {
 
     public static void main(String[] args) {
         Main main = new Main();
+        Thread mainthread = new Thread(main);
+        mainthread.start();
     }
+
 }
