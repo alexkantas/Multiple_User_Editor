@@ -23,9 +23,9 @@ import java.util.Observable;
  */
 public class Model extends Observable {
 
-    private String text = "HI!";
+    private volatile String text = "HI!";
 
-    private int i = 1;
+    private volatile int i = 1;
 
     public synchronized String getText() {
         return text;
@@ -33,33 +33,33 @@ public class Model extends Observable {
 
     public synchronized void setText(String text) {
         this.text = text;
-            setChanged();
-            notifyObservers();
+        setChanged();
+        notifyObservers();
     }
 
     public synchronized void addViewer() {
-            Viewer v = new Viewer("Viewer #" + i, this);
-            Thread tv = new Thread(v);
-            tv.start();
+        Thread tv = new Thread(() -> {
+            Viewer v = new Viewer("Viewer #" + i);
             i++;
             addObserver(v);
             System.out.println("" + getListsize());
             setChanged();
             notifyObservers();
-
+        });
+        tv.start();
     }
 
     public synchronized void addViewer(Viewer viewer) {
-            addObserver(viewer);
-            System.out.println("" + getListsize());
-            setChanged();
-            notifyObservers();
+        addObserver(viewer);
+        System.out.println("" + getListsize());
+        setChanged();
+        notifyObservers();
     }
 
     public synchronized void removeViewer(Viewer viewer) {
-            deleteObserver(viewer);
-            setChanged();
-            notifyObservers();
+        deleteObserver(viewer);
+        setChanged();
+        notifyObservers();
     }
 
     public synchronized int getListsize() {

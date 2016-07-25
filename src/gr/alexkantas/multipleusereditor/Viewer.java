@@ -19,6 +19,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.JButton;
@@ -39,7 +41,7 @@ import javax.swing.text.StyleContext;
  *
  * @author Alexandros Kantas
  */
-public class Viewer extends JFrame implements Observer, ActionListener, DocumentListener,Runnable {
+public class Viewer extends JFrame implements Observer, ActionListener, DocumentListener {
 
     //Interface Elements
     private JPanel panel1 = new JPanel();
@@ -50,17 +52,17 @@ public class Viewer extends JFrame implements Observer, ActionListener, Document
     private JButton logbtn = new JButton("Log out");
     private JList list = new JList();
     private JScrollPane scrollPane2 = new JScrollPane(list);
-    private Model model;
+    private Model model = Main.model;
     private String title;
     private StyleContext sc = StyleContext.getDefaultStyleContext();
     private AttributeSet aset;
     //
 
-    public Viewer(String title, Model model) {
-        this.title=title;
-        this.model=model;
+    public Viewer(String title) {
+        this.title = title;
+        initialize();
     }
-
+    
     @Override
     public void actionPerformed(ActionEvent ae) {
         if (logbtn.getText().equals("Log out")) {
@@ -73,12 +75,12 @@ public class Viewer extends JFrame implements Observer, ActionListener, Document
             logbtn.setText("Log out");
         }
     }
-
+    
     @Override
     public void update(Observable o, Object o1) {
         txtarea.setText(model.getText());
     }
-
+    
     @Override
     public void insertUpdate(DocumentEvent de) {
         model.deleteObserver(this);
@@ -88,21 +90,20 @@ public class Viewer extends JFrame implements Observer, ActionListener, Document
         model.setText(txtarea.getText());
         model.addObserver(this);
     }
-
+    
     @Override
     public void removeUpdate(DocumentEvent de) {
         model.deleteObserver(this);
         model.setText(txtarea.getText());
         model.addObserver(this);
     }
-
+    
     @Override
     public void changedUpdate(DocumentEvent de) {
-
+        
     }
-
-    @Override
-    public void run() {
+    
+    public void initialize() {
         //Add interface components
         txtarea.getDocument().addDocumentListener(this);
         panel1.add(txtarea);
@@ -122,6 +123,16 @@ public class Viewer extends JFrame implements Observer, ActionListener, Document
         } else {
             aset = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, Color.BLUE);
         }
+        
+        addWindowListener(new WindowAdapter() {
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+                model.deleteObserver(Viewer.this);
+                super.windowClosing(e);
+            }
+            
+        });
 
         //Set JFrame properties
         setTitle(title);
@@ -130,5 +141,5 @@ public class Viewer extends JFrame implements Observer, ActionListener, Document
         setVisible(true);
         //
     }
-
+    
 }

@@ -27,18 +27,18 @@ import javax.swing.JPanel;
  *
  * @author Alexandros Kantas
  */
-public class Main extends JFrame implements Observer, Runnable {
+public class Main extends JFrame implements Observer {
 
     //Interface Elements
     GridLayout grid = new GridLayout(2, 1);
     JPanel panel1 = new JPanel(grid);
     JLabel label = new JLabel("<html>Connected users: 0</html>");
     JButton button = new JButton("+");
-    Model model = new Model();
+    static Model model = new Model();
     //
 
-    @Override
-    public void run() {
+    
+    public Main() {
         //Add interface components
         panel1.add(label);
         panel1.add(button);
@@ -63,8 +63,6 @@ public class Main extends JFrame implements Observer, Runnable {
 
     public static void main(String[] args) {
         Main main = new Main();
-        Thread mainthread = new Thread(main);
-        mainthread.start();
     }
 
 }
