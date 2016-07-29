@@ -16,8 +16,6 @@
 package gr.alexkantas.multipleusereditor;
 
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.JButton;
@@ -36,14 +34,15 @@ public class Main extends JFrame implements Observer {
     JPanel panel1 = new JPanel(grid);
     JLabel label = new JLabel("<html>Connected users: 0</html>");
     JButton button = new JButton("+");
-    Model model = new Model();
+    static Model model = new Model();
     //
 
+    
     public Main() {
         //Add interface components
         panel1.add(label);
         panel1.add(button);
-        button.addActionListener(e->model.addViewer());
+        button.addActionListener(e -> model.addViewer());
         add(panel1);
         model.addObserver(this);
         //
@@ -65,4 +64,5 @@ public class Main extends JFrame implements Observer {
     public static void main(String[] args) {
         Main main = new Main();
     }
+
 }
